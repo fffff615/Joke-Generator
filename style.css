@@ -1,46 +1,69 @@
-header {
-  text-align: center;
-  background-color: #00b3d6;
-  width: 930px;
-  height: 50px;
-  font-size: 50px;
-  padding-bottom: 10px;
-  padding-top: 10px;
-  border-radius: 10px;
-  border: 5px solid #0076b5;
-  color: #03045d;
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    background: linear-gradient(160deg, #c8eef6 0%, #e5f8fd 55%, #ffffff 100%);
 }
 
-body {
-  background-color: #c8eef6;
-  font-family: "Poppins", sans-serif;
-  font-weight: 400;
-  font-style: normal;
+.home {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+}
+
+.home__hero {
+    text-align: center;
+    max-width: 540px;
+    padding: 48px 40px;
+    background-color: rgba(255, 255, 255, 0.85);
+    border-radius: 20px;
+    border: 1px solid rgba(3, 4, 93, 0.08);
+    box-shadow: 0 24px 60px rgba(0, 118, 181, 0.15);
+    backdrop-filter: blur(4px);
+}
+
+.home__title {
+    margin: 0;
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    letter-spacing: 0.02em;
+    color: #03045d;
+}
+
+.home__subtitle {
+    margin: 16px 0 36px;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: rgba(3, 4, 93, 0.75);
 }
 
 .generateAJokeButton {
-  position: inherit;
-  right: 50%;
-  left: 50%;
-  text-align: center;
-  background-color: #03045d;
-  color: #c8eef6;
-  padding: 15px 24px;
-  font-size: 35px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transform: scale(1);
-  transition:
-    transform 0.25s ease,
-    background-color 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 32px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: #ffffff;
+    background: linear-gradient(135deg, #03045d, #0076b5);
+    border-radius: 999px;
+    border: none;
+    box-shadow: 0 14px 25px rgba(0, 118, 181, 0.35);
+    cursor: pointer;
+    transform: translateY(0);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 .generateAJokeButton:hover {
-  background-color: #171971;
-  transform: scale(1.18);
+    background: linear-gradient(135deg, #012759, #0091cf);
+    transform: translateY(-4px);
+    box-shadow: 0 18px 35px rgba(0, 118, 181, 0.4);
 }
-a {
-  text-decoration: none;
-  color: #c8eef6;
+
+.generateAJokeButton:active {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 18px rgba(0, 118, 181, 0.3);
 }
