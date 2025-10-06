@@ -24,11 +24,75 @@
         <p class="joke-panel__setup" hidden></p>
         <p class="joke-panel__punchline" hidden></p>
       </article>
-      <button class="generateAJokeButton" type="button">
-        Get another joke
-      </button>
+      <div class="joke-controls">
+        <button class="generateAJokeButton" type="button">
+          Get another joke
+        </button>
+        <div
+          class="category-pills"
+          role="group"
+          aria-label="Pick a joke category (optional)"
+        >
+          <button
+            class="category-pill is-active"
+            type="button"
+            data-category="random"
+          >
+            Random
+          </button>
+          <button class="category-pill" type="button" data-category="general">
+            General
+          </button>
+          <button
+            class="category-pill"
+            type="button"
+            data-category="programming"
+          >
+            Programming
+          </button>
+          <button
+            class="category-pill"
+            type="button"
+            data-category="knock-knock"
+          >
+            Knock Knock
+          </button>
+        </div>
+      </div>
     </main>
     <script>
+      const jokeButton = document.querySelector(".generateAJokeButton");
+      const promptEl = document.querySelector(".joke-panel__prompt");
+      const setupEl = document.querySelector(".joke-panel__setup");
+      const punchlineEl = document.querySelector(".joke-panel__punchline");
+      const API_ROOT = "https://official-joke-api.appspot.com/jokes";
+      const categoryButtons = Array.from(
+        document.querySelectorAll(".category-pill"),
+      );
+      let activeCategory = "random";
+
+      function setActiveCategory(category) {
+        activeCategory = category;
+        categoryButtons.forEach((button) => {
+          const isActive = button.dataset.category === category;
+          button.classList.toggle("is-active", isActive);
+        });
+      }
+      setActiveCategory(activeCategory);
+
+      function buildJokeUrl() {
+        if (!activeCategory || activeCategory === "random") {
+          return `${API_ROOT}/random`;
+        }
+        return `${API_ROOT}/${activeCategory}/random`;
+      }
+
+      async function fetchJoke() {
+        jokeButton.disabled = true;
+        jokeButton.textContent = "Loading...";
+        categoryButtons.forEach((button) => {
+          button.disabled = true;
+        });
       const jokeButton = document.querySelector('.generateAJokeButton');
       const promptEl = document.querySelector('.joke-panel__prompt');
       const setupEl = document.querySelector('.joke-panel__setup');
@@ -43,11 +107,16 @@
         setupEl.hidden = true;
         punchlineEl.hidden = true;
         try {
-          const response = await fetch(API_URL);
+          const response = await fetch(buildJokeUrl());
           if (!response.ok) {
             throw new Error(`Request failed with ${response.status}`);
           }
-          const { setup, punchline } = await response.json();
+          const payload = await response.json();
+          const joke = Array.isArray(payload) ? payload[0] : payload;
+          if (!joke?.setup || !joke?.punchline) {
+            throw new Error("No joke returned");
+          }
+          const { setup, punchline } = joke;
           promptEl.hidden = true;
           setupEl.hidden = false;
           punchlineEl.hidden = false;
@@ -59,10 +128,28 @@
             'Hmm, the punchline got lost. Try again in a moment.';
         } finally {
           jokeButton.disabled = false;
-          jokeButton.textContent = 'Get another joke';
+          jokeButton.textContent = "Get another joke";
+          categoryButtons.forEach((button) => {
+            button.disabled = false;
+          });
         }
       }
 
+      function handleCategoryClick(event) {
+        const { category } = event.currentTarget.dataset;
+        if (!category || category === activeCategory) {
+          fetchJoke();
+          return;
+          jokeButton.textContent = 'Get another joke';
+        }
+        setActiveCategory(category);
+        fetchJoke();
+      }
+
+      jokeButton.addEventListener("click", fetchJoke);
+      categoryButtons.forEach((button) => {
+        button.addEventListener("click", handleCategoryClick);
+      });
       jokeButton.addEventListener('click', fetchJoke);
     </script>
   </body>
