@@ -12,11 +12,13 @@
     <title>Joke Generator</title>
   </head>
   <body class="home">
+    <!-- This is the main card the visitor sees when the page loads -->
     <main class="home__hero" aria-live="polite">
       <h1 class="home__title">Joke Generator</h1>
       <p class="home__subtitle">
         Need a smile? Press the button and let the punchlines roll.
       </p>
+      <!-- The joke panel starts with a friendly message and later swaps in the joke -->
       <article class="joke-panel">
         <p class="joke-panel__prompt joke-panel__text">
           Press the button to get your first joke.
@@ -66,7 +68,9 @@
         </div>
       </div>
     </main>
+    <!-- All of the code below tells the page how to grab a new joke -->
     <script>
+      // Grab the parts of the page we want to change when a joke loads
       const jokeButton = document.querySelector('.generateAJokeButton');
       const promptEl = document.querySelector('.joke-panel__prompt');
       const setupEl = document.querySelector('.joke-panel__setup');
@@ -77,6 +81,7 @@
       const API_ROOT = 'https://official-joke-api.appspot.com/jokes';
       let activeCategory = 'random';
 
+      // Light up the category button that is currently selected
       function setActiveCategory(category) {
         activeCategory = category;
         categoryButtons.forEach((button) => {
@@ -85,6 +90,7 @@
         });
       }
 
+      // Decide which web address to call based on the chosen category
       function buildJokeUrl() {
         if (!activeCategory || activeCategory === 'random') {
           return `${API_ROOT}/random`;
@@ -92,6 +98,7 @@
         return `${API_ROOT}/${activeCategory}/random`;
       }
 
+      // Show or hide a line of text by toggling a helper class
       function setVisibility(element, shouldShow) {
         if (shouldShow) {
           element.classList.remove('is-hidden');
@@ -102,6 +109,7 @@
         }
       }
 
+      // Ask the API for a new joke and update the page with the answer
       async function fetchJoke() {
         jokeButton.disabled = true;
         jokeButton.textContent = 'Loading...';
@@ -141,6 +149,7 @@
         }
       }
 
+      // When someone taps a category pill, remember it and fetch a fresh joke
       function handleCategoryClick(event) {
         const { category } = event.currentTarget.dataset;
         if (!category) {
@@ -152,8 +161,11 @@
         fetchJoke();
       }
 
+      // Set up the page so the "Random" option looks selected from the start
       setActiveCategory(activeCategory);
+      // Clicking the big button always grabs another joke
       jokeButton.addEventListener('click', fetchJoke);
+      // Give every category pill the ability to load its own jokes
       categoryButtons.forEach((button) => {
         button.addEventListener('click', handleCategoryClick);
       });

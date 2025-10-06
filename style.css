@@ -39,6 +39,7 @@ body {
   color: rgba(3, 4, 93, 0.75);
 }
 
+/* This box holds the joke text and keeps everything steady on the page */
 .joke-panel {
   margin-bottom: 36px;
   padding: 28px;
@@ -90,6 +91,7 @@ body {
   align-items: center;
 }
 
+/* A tidy row of buttons so kids can pick the type of joke they want */
 .category-pills {
   display: flex;
   flex-wrap: wrap;
