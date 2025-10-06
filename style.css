@@ -1,69 +1,109 @@
 body {
-    margin: 0;
-    min-height: 100vh;
-    font-family: "Poppins", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-    background: linear-gradient(160deg, #c8eef6 0%, #e5f8fd 55%, #ffffff 100%);
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  background: linear-gradient(160deg, #c8eef6 0%, #e5f8fd 55%, #ffffff 100%);
 }
 
 .home {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 48px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
 }
 
 .home__hero {
-    text-align: center;
-    max-width: 540px;
-    padding: 48px 40px;
-    background-color: rgba(255, 255, 255, 0.85);
-    border-radius: 20px;
-    border: 1px solid rgba(3, 4, 93, 0.08);
-    box-shadow: 0 24px 60px rgba(0, 118, 181, 0.15);
-    backdrop-filter: blur(4px);
+  text-align: center;
+  max-width: 540px;
+  padding: 48px 40px;
+  background-color: rgba(255, 255, 255, 0.85);
+  border-radius: 20px;
+  border: 1px solid rgba(3, 4, 93, 0.08);
+  box-shadow: 0 24px 60px rgba(0, 118, 181, 0.15);
+  backdrop-filter: blur(4px);
 }
 
 .home__title {
-    margin: 0;
-    font-size: clamp(2.5rem, 5vw, 3.5rem);
-    letter-spacing: 0.02em;
-    color: #03045d;
+  margin: 0;
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  letter-spacing: 0.02em;
+  color: #03045d;
 }
 
 .home__subtitle {
-    margin: 16px 0 36px;
-    font-size: 1.1rem;
-    line-height: 1.6;
-    color: rgba(3, 4, 93, 0.75);
+  margin: 16px 0 36px;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: rgba(3, 4, 93, 0.75);
+}
+
+.joke-panel {
+  margin-bottom: 36px;
+  padding: 28px;
+  border-radius: 16px;
+  background: rgba(3, 4, 93, 0.05);
+  border: 1px solid rgba(3, 4, 93, 0.12);
+  color: rgba(3, 4, 93, 0.85);
+  line-height: 1.7;
+}
+
+.joke-panel__prompt {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: rgba(3, 4, 93, 0.65);
+}
+
+.joke-panel__setup,
+.joke-panel__punchline {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.joke-panel__setup {
+  font-weight: 600;
+}
+
+.joke-panel__punchline {
+  margin-top: 16px;
 }
 
 .generateAJokeButton {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 16px 32px;
-    font-size: 1.25rem;
-    font-weight: 600;
-    text-decoration: none;
-    color: #ffffff;
-    background: linear-gradient(135deg, #03045d, #0076b5);
-    border-radius: 999px;
-    border: none;
-    box-shadow: 0 14px 25px rgba(0, 118, 181, 0.35);
-    cursor: pointer;
-    transform: translateY(0);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 32px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #03045d, #0076b5);
+  border-radius: 999px;
+  border: none;
+  box-shadow: 0 14px 25px rgba(0, 118, 181, 0.35);
+  cursor: pointer;
+  transform: translateY(0);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
 }
 
 .generateAJokeButton:hover {
-    background: linear-gradient(135deg, #012759, #0091cf);
-    transform: translateY(-4px);
-    box-shadow: 0 18px 35px rgba(0, 118, 181, 0.4);
+  background: linear-gradient(135deg, #012759, #0091cf);
+  transform: translateY(-4px);
+  box-shadow: 0 18px 35px rgba(0, 118, 181, 0.4);
 }
 
 .generateAJokeButton:active {
-    transform: translateY(-1px);
-    box-shadow: 0 10px 18px rgba(0, 118, 181, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 18px rgba(0, 118, 181, 0.3);
+}
+
+.generateAJokeButton:disabled {
+  cursor: wait;
+  transform: translateY(0);
+  box-shadow: 0 10px 18px rgba(0, 118, 181, 0.2);
+  background: linear-gradient(135deg, #6b8fbc, #7ba8cf);
 }
