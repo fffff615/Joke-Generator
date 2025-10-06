@@ -20,6 +20,25 @@
       </p>
       <!-- The joke panel starts with a friendly message and later swaps in the joke -->
       <article class="joke-panel">
+        <!-- Little copy button that appears only when we have a full joke -->
+        <div
+          class="joke-panel__copy is-hidden"
+          role="button"
+          tabindex="0"
+          aria-label="Copy joke to share"
+        >
+          <span class="joke-panel__tooltip">Copy joke to share</span>
+          <svg
+            aria-hidden="true"
+            focusable="false"
+            class="joke-panel__icon"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M8 2a2 2 0 0 0-2 2v10h2V4h9V2H8Zm3 4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-9Zm0 2h9v12h-9V8Z"
+            />
+          </svg>
+        </div>
         <p class="joke-panel__prompt joke-panel__text">
           Press the button to get your first joke.
         </p>
@@ -75,6 +94,8 @@
       const promptEl = document.querySelector('.joke-panel__prompt');
       const setupEl = document.querySelector('.joke-panel__setup');
       const punchlineEl = document.querySelector('.joke-panel__punchline');
+      const copyButton = document.querySelector('.joke-panel__copy');
+      const tooltipEl = document.querySelector('.joke-panel__tooltip');
       const categoryButtons = Array.from(
         document.querySelectorAll('.category-pill')
       );
@@ -109,6 +130,20 @@
         }
       }
 
+      // Show or hide the copy button so it only appears when we have a full joke
+      function setCopyVisibility(shouldShow) {
+        if (shouldShow) {
+          copyButton.classList.remove('is-hidden');
+          copyButton.setAttribute('tabindex', '0');
+          copyButton.setAttribute('aria-hidden', 'false');
+        } else {
+          copyButton.classList.add('is-hidden');
+          copyButton.setAttribute('tabindex', '-1');
+          copyButton.setAttribute('aria-hidden', 'true');
+          tooltipEl.textContent = 'Copy joke to share';
+        }
+      }
+
       // Ask the API for a new joke and update the page with the answer
       async function fetchJoke() {
         jokeButton.disabled = true;
@@ -116,6 +151,7 @@
         categoryButtons.forEach((button) => {
           button.disabled = true;
         });
+        setCopyVisibility(false);
         setVisibility(promptEl, true);
         promptEl.textContent = 'Fetching something funny…';
         setVisibility(setupEl, false);
@@ -136,10 +172,12 @@
           setVisibility(punchlineEl, true);
           setupEl.textContent = setup;
           punchlineEl.textContent = punchline;
+          setCopyVisibility(true);
         } catch (error) {
           setVisibility(promptEl, true);
           promptEl.textContent =
             'Hmm, the punchline got lost. Try again in a moment.';
+          setCopyVisibility(false);
         } finally {
           jokeButton.disabled = false;
           jokeButton.textContent = 'Get another joke';
@@ -147,6 +185,64 @@
             button.disabled = false;
           });
         }
+      }
+
+      // Try to copy text the modern way, and fall back to an older trick if needed
+      function writeToClipboard(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          return navigator.clipboard.writeText(text);
+        }
+        return new Promise((resolve, reject) => {
+          const helper = document.createElement('textarea');
+          helper.value = text;
+          helper.setAttribute('readonly', '');
+          helper.style.position = 'absolute';
+          helper.style.left = '-9999px';
+          document.body.appendChild(helper);
+          const selection = document.getSelection();
+          const originalRange =
+            selection && selection.rangeCount > 0
+              ? selection.getRangeAt(0)
+              : null;
+          helper.select();
+          const successful = document.execCommand('copy');
+          document.body.removeChild(helper);
+          if (originalRange && selection) {
+            selection.removeAllRanges();
+            selection.addRange(originalRange);
+          }
+          if (successful) {
+            resolve();
+          } else {
+            reject(new Error('Copy command unavailable'));
+          }
+        });
+      }
+
+      // Copy both the setup and the punchline so the whole joke can be shared
+      function copyActiveJoke() {
+        if (copyButton.classList.contains('is-hidden')) {
+          return;
+        }
+        const setup = setupEl.textContent.trim();
+        const punchline = punchlineEl.textContent.trim();
+        if (!setup || !punchline) {
+          return;
+        }
+        const jokeText = `${setup}\n${punchline}`;
+        writeToClipboard(jokeText)
+          .then(() => {
+            tooltipEl.textContent = 'Copied!';
+            setTimeout(() => {
+              tooltipEl.textContent = 'Copy joke to share';
+            }, 1200);
+          })
+          .catch(() => {
+            tooltipEl.textContent = 'Copy failed';
+            setTimeout(() => {
+              tooltipEl.textContent = 'Copy joke to share';
+            }, 1200);
+          });
       }
 
       // When someone taps a category pill, remember it and fetch a fresh joke
@@ -169,6 +265,16 @@
       categoryButtons.forEach((button) => {
         button.addEventListener('click', handleCategoryClick);
       });
+      // Let the copy button work with both mouse clicks and keyboard presses
+      copyButton.addEventListener('click', copyActiveJoke);
+      copyButton.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          copyActiveJoke();
+        }
+      });
+      // Start with the copy button hidden until the first joke pops in
+      setCopyVisibility(false);
     </script>
   </body>
 </html>
