@@ -18,11 +18,17 @@
         Need a smile? Press the button and let the punchlines roll.
       </p>
       <article class="joke-panel">
-        <p class="joke-panel__prompt">
+        <p class="joke-panel__prompt joke-panel__text">
           Press the button to get your first joke.
         </p>
-        <p class="joke-panel__setup" hidden></p>
-        <p class="joke-panel__punchline" hidden></p>
+        <p
+          class="joke-panel__setup joke-panel__text is-hidden"
+          aria-hidden="true"
+        ></p>
+        <p
+          class="joke-panel__punchline joke-panel__text is-hidden"
+          aria-hidden="true"
+        ></p>
       </article>
       <div class="joke-controls">
         <button class="generateAJokeButton" type="button">
@@ -61,51 +67,51 @@
       </div>
     </main>
     <script>
-      const jokeButton = document.querySelector(".generateAJokeButton");
-      const promptEl = document.querySelector(".joke-panel__prompt");
-      const setupEl = document.querySelector(".joke-panel__setup");
-      const punchlineEl = document.querySelector(".joke-panel__punchline");
-      const API_ROOT = "https://official-joke-api.appspot.com/jokes";
+      const jokeButton = document.querySelector('.generateAJokeButton');
+      const promptEl = document.querySelector('.joke-panel__prompt');
+      const setupEl = document.querySelector('.joke-panel__setup');
+      const punchlineEl = document.querySelector('.joke-panel__punchline');
       const categoryButtons = Array.from(
-        document.querySelectorAll(".category-pill"),
+        document.querySelectorAll('.category-pill')
       );
-      let activeCategory = "random";
+      const API_ROOT = 'https://official-joke-api.appspot.com/jokes';
+      let activeCategory = 'random';
 
       function setActiveCategory(category) {
         activeCategory = category;
         categoryButtons.forEach((button) => {
           const isActive = button.dataset.category === category;
-          button.classList.toggle("is-active", isActive);
+          button.classList.toggle('is-active', isActive);
         });
       }
-      setActiveCategory(activeCategory);
 
       function buildJokeUrl() {
-        if (!activeCategory || activeCategory === "random") {
+        if (!activeCategory || activeCategory === 'random') {
           return `${API_ROOT}/random`;
         }
         return `${API_ROOT}/${activeCategory}/random`;
       }
 
-      async function fetchJoke() {
-        jokeButton.disabled = true;
-        jokeButton.textContent = "Loading...";
-        categoryButtons.forEach((button) => {
-          button.disabled = true;
-        });
-      const jokeButton = document.querySelector('.generateAJokeButton');
-      const promptEl = document.querySelector('.joke-panel__prompt');
-      const setupEl = document.querySelector('.joke-panel__setup');
-      const punchlineEl = document.querySelector('.joke-panel__punchline');
-      const API_URL = 'https://official-joke-api.appspot.com/jokes/random';
+      function setVisibility(element, shouldShow) {
+        if (shouldShow) {
+          element.classList.remove('is-hidden');
+          element.removeAttribute('aria-hidden');
+        } else {
+          element.classList.add('is-hidden');
+          element.setAttribute('aria-hidden', 'true');
+        }
+      }
 
       async function fetchJoke() {
         jokeButton.disabled = true;
         jokeButton.textContent = 'Loading...';
-        promptEl.hidden = false;
+        categoryButtons.forEach((button) => {
+          button.disabled = true;
+        });
+        setVisibility(promptEl, true);
         promptEl.textContent = 'Fetching something funny…';
-        setupEl.hidden = true;
-        punchlineEl.hidden = true;
+        setVisibility(setupEl, false);
+        setVisibility(punchlineEl, false);
         try {
           const response = await fetch(buildJokeUrl());
           if (!response.ok) {
@@ -114,21 +120,21 @@
           const payload = await response.json();
           const joke = Array.isArray(payload) ? payload[0] : payload;
           if (!joke?.setup || !joke?.punchline) {
-            throw new Error("No joke returned");
+            throw new Error('No joke returned');
           }
           const { setup, punchline } = joke;
-          promptEl.hidden = true;
-          setupEl.hidden = false;
-          punchlineEl.hidden = false;
+          setVisibility(promptEl, false);
+          setVisibility(setupEl, true);
+          setVisibility(punchlineEl, true);
           setupEl.textContent = setup;
           punchlineEl.textContent = punchline;
         } catch (error) {
-          promptEl.hidden = false;
+          setVisibility(promptEl, true);
           promptEl.textContent =
             'Hmm, the punchline got lost. Try again in a moment.';
         } finally {
           jokeButton.disabled = false;
-          jokeButton.textContent = "Get another joke";
+          jokeButton.textContent = 'Get another joke';
           categoryButtons.forEach((button) => {
             button.disabled = false;
           });
@@ -137,20 +143,20 @@
 
       function handleCategoryClick(event) {
         const { category } = event.currentTarget.dataset;
-        if (!category || category === activeCategory) {
-          fetchJoke();
+        if (!category) {
           return;
-          jokeButton.textContent = 'Get another joke';
         }
-        setActiveCategory(category);
+        if (category !== activeCategory) {
+          setActiveCategory(category);
+        }
         fetchJoke();
       }
 
-      jokeButton.addEventListener("click", fetchJoke);
-      categoryButtons.forEach((button) => {
-        button.addEventListener("click", handleCategoryClick);
-      });
+      setActiveCategory(activeCategory);
       jokeButton.addEventListener('click', fetchJoke);
+      categoryButtons.forEach((button) => {
+        button.addEventListener('click', handleCategoryClick);
+      });
     </script>
   </body>
 </html>
