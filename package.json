@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write ."
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,8 @@
     "url": "https://github.com/fffff615/Joke-Generator/issues"
   },
   "homepage": "https://github.com/fffff615/Joke-Generator#readme",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "prettier": "^3.3.3"
+  }
 }

@@ -1,49 +1,46 @@
-header{
-    text-align: center;
-    background-color: #00b3d6;
-    width: 930px;
-    height: 50px;
-    font-size: 50px;
-    padding-bottom: 10px;
-    padding-top: 10px;
-    border-radius: 10px;
-    border: 5px solid #0076b5;
-    color: #03045d;
+header {
+  text-align: center;
+  background-color: #00b3d6;
+  width: 930px;
+  height: 50px;
+  font-size: 50px;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  border-radius: 10px;
+  border: 5px solid #0076b5;
+  color: #03045d;
 }
 
-body{
-    background-color: #c8eef6;
-    font-family: "Poppins", sans-serif;
-    font-weight: 400;
-    font-style: normal;
+body {
+  background-color: #c8eef6;
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
-.generateAJokeButton{
-    position: inherit;
-    right: 50%;
-    left: 50%;
-    text-align: center;
-    background-color: #03045d;
-    color: #c8eef6;
-    padding: 15px 24px;
-    font-size: 35px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transform: scale(1);
-    transition: transform 0.25s ease, background-color 0.25s ease;
+.generateAJokeButton {
+  position: inherit;
+  right: 50%;
+  left: 50%;
+  text-align: center;
+  background-color: #03045d;
+  color: #c8eef6;
+  padding: 15px 24px;
+  font-size: 35px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transform: scale(1);
+  transition:
+    transform 0.25s ease,
+    background-color 0.25s ease;
 }
 
-.generateAJokeButton:hover{
-    background-color: #171971;
-    transform: scale(1.18);
+.generateAJokeButton:hover {
+  background-color: #171971;
+  transform: scale(1.18);
 }
-a{
-    text-decoration: none;
-    color: #c8eef6;
+a {
+  text-decoration: none;
+  color: #c8eef6;
 }
-
-
-
-
-
