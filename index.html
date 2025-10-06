@@ -93,8 +93,17 @@
         categoryButtons.forEach((button) => {
           button.disabled = true;
         });
+      const jokeButton = document.querySelector('.generateAJokeButton');
+      const promptEl = document.querySelector('.joke-panel__prompt');
+      const setupEl = document.querySelector('.joke-panel__setup');
+      const punchlineEl = document.querySelector('.joke-panel__punchline');
+      const API_URL = 'https://official-joke-api.appspot.com/jokes/random';
+
+      async function fetchJoke() {
+        jokeButton.disabled = true;
+        jokeButton.textContent = 'Loading...';
         promptEl.hidden = false;
-        promptEl.textContent = "Fetching something funny…";
+        promptEl.textContent = 'Fetching something funny…';
         setupEl.hidden = true;
         punchlineEl.hidden = true;
         try {
@@ -116,7 +125,7 @@
         } catch (error) {
           promptEl.hidden = false;
           promptEl.textContent =
-            "Hmm, the punchline got lost. Try again in a moment.";
+            'Hmm, the punchline got lost. Try again in a moment.';
         } finally {
           jokeButton.disabled = false;
           jokeButton.textContent = "Get another joke";
@@ -131,6 +140,7 @@
         if (!category || category === activeCategory) {
           fetchJoke();
           return;
+          jokeButton.textContent = 'Get another joke';
         }
         setActiveCategory(category);
         fetchJoke();
@@ -140,6 +150,7 @@
       categoryButtons.forEach((button) => {
         button.addEventListener("click", handleCategoryClick);
       });
+      jokeButton.addEventListener('click', fetchJoke);
     </script>
   </body>
 </html>
