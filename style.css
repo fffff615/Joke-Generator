@@ -52,7 +52,8 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 12px;
+  gap: 14px;
+  position: relative;
 }
 
 .joke-panel__text {
@@ -69,6 +70,89 @@ body {
   font-size: 1.05rem;
   font-weight: 500;
   color: rgba(3, 4, 93, 0.65);
+}
+
+.joke-panel__copy {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(3, 4, 93, 0.1);
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.joke-panel__copy:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 118, 181, 0.35);
+}
+
+.joke-panel__copy:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 22px rgba(0, 118, 181, 0.18);
+}
+
+/* Hide the copy button until there is actually a joke to share */
+.joke-panel__copy.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.joke-panel__icon {
+  width: 18px;
+  height: 18px;
+  fill: rgba(3, 4, 93, 0.75);
+}
+
+.joke-panel__copy:hover .joke-panel__icon,
+.joke-panel__copy:focus .joke-panel__icon {
+  fill: #03045d;
+}
+
+.joke-panel__tooltip {
+  position: absolute;
+  right: 50%;
+  top: calc(100% + 8px);
+  translate: 50% 0;
+  background: #03045d;
+  color: #ffffff;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.joke-panel__tooltip::after {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  translate: -50% 0;
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent transparent #03045d transparent;
+}
+
+.joke-panel__copy:hover .joke-panel__tooltip,
+.joke-panel__copy:focus-visible .joke-panel__tooltip {
+  opacity: 1;
 }
 
 .joke-panel__setup,
