@@ -1,7 +1,7 @@
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: "Poppins", sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-weight: 400;
   font-style: normal;
   background: linear-gradient(160deg, #c8eef6 0%, #e5f8fd 55%, #ffffff 100%);
