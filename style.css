@@ -1,49 +1,182 @@
-header{
-    text-align: center;
-    background-color: #00b3d6;
-    width: 930px;
-    height: 50px;
-    font-size: 50px;
-    padding-bottom: 10px;
-    padding-top: 10px;
-    border-radius: 10px;
-    border: 5px solid #0076b5;
-    color: #03045d;
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  background: linear-gradient(160deg, #c8eef6 0%, #e5f8fd 55%, #ffffff 100%);
 }
 
-body{
-    background-color: #c8eef6;
-    font-family: "Poppins", sans-serif;
-    font-weight: 400;
-    font-style: normal;
+.home {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
 }
 
-.generateAJokeButton{
-    position: inherit;
-    right: 50%;
-    left: 50%;
-    text-align: center;
-    background-color: #03045d;
-    color: #c8eef6;
-    padding: 15px 24px;
-    font-size: 35px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transform: scale(1);
-    transition: transform 0.25s ease, background-color 0.25s ease;
+.home__hero {
+  text-align: center;
+  max-width: 540px;
+  padding: 48px 40px;
+  background-color: rgba(255, 255, 255, 0.85);
+  border-radius: 20px;
+  border: 1px solid rgba(3, 4, 93, 0.08);
+  box-shadow: 0 24px 60px rgba(0, 118, 181, 0.15);
+  backdrop-filter: blur(4px);
 }
 
-.generateAJokeButton:hover{
-    background-color: #171971;
-    transform: scale(1.18);
-}
-a{
-    text-decoration: none;
-    color: #c8eef6;
+.home__title {
+  margin: 0;
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  letter-spacing: 0.02em;
+  color: #03045d;
 }
 
+.home__subtitle {
+  margin: 16px 0 36px;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: rgba(3, 4, 93, 0.75);
+}
 
+/* This box holds the joke text and keeps everything steady on the page */
+.joke-panel {
+  margin-bottom: 36px;
+  padding: 28px;
+  border-radius: 16px;
+  background: rgba(3, 4, 93, 0.05);
+  border: 1px solid rgba(3, 4, 93, 0.12);
+  color: rgba(3, 4, 93, 0.85);
+  line-height: 1.7;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  gap: 14px;
+  position: relative;
+}
 
+.joke-panel__text {
+  margin: 0;
+  min-height: 1.8em;
+  transition: opacity 0.25s ease;
+}
 
+.joke-panel__text.is-hidden {
+  opacity: 0;
+}
 
+.joke-panel__prompt {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: rgba(3, 4, 93, 0.65);
+}
+
+.joke-panel__copy {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(3, 4, 93, 0.1);
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.joke-panel__copy:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 118, 181, 0.35);
+}
+
+.joke-panel__copy:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 22px rgba(0, 118, 181, 0.18);
+}
+
+/* Hide the copy button until there is actually a joke to share */
+.joke-panel__copy.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.joke-panel__icon {
+  width: 18px;
+  height: 18px;
+  fill: rgba(3, 4, 93, 0.75);
+}
+
+.joke-panel__copy:hover .joke-panel__icon,
+.joke-panel__copy:focus .joke-panel__icon {
+  fill: #03045d;
+}
+
+.joke-panel__tooltip {
+  position: absolute;
+  right: 50%;
+  top: calc(100% + 8px);
+  translate: 50% 0;
+  background: #03045d;
+  color: #ffffff;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.joke-panel__tooltip::after {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  translate: -50% 0;
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent transparent #03045d transparent;
+}
+
+.joke-panel__copy:hover .joke-panel__tooltip,
+.joke-panel__copy:focus-visible .joke-panel__tooltip {
+  opacity: 1;
+}
+
+.joke-panel__setup,
+.joke-panel__punchline {
+  font-size: 1.15rem;
+}
+
+.joke-panel__setup {
+  font-weight: 600;
+}
+
+.joke-panel__punchline {
+  margin-top: 16px;
+}
+
+.joke-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+/* A tidy row of buttons so kids can pick the type of joke they want */
+.category-pills {
+  display: flex;
+  flex-wrap: wrap;

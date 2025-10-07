@@ -1,19 +1,280 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <meta charset="UTF-8">
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8" />
     <title>Joke Generator</title>
-</head>
-<body>
-<header>Joke Generator</header>
-<br>
-<br>
-<br>
-<button class="generateAJokeButton"><a href="jokes.html">Generate a joke</a></button>
+  </head>
+  <body class="home">
+    <!-- This is the main card the visitor sees when the page loads -->
+    <main class="home__hero" aria-live="polite">
+      <h1 class="home__title">Joke Generator</h1>
+      <p class="home__subtitle">
+        Need a smile? Press the button and let the punchlines roll.
+      </p>
+      <!-- The joke panel starts with a friendly message and later swaps in the joke -->
+      <article class="joke-panel">
+        <!-- Little copy button that appears only when we have a full joke -->
+        <div
+          class="joke-panel__copy is-hidden"
+          role="button"
+          tabindex="0"
+          aria-label="Copy joke to share"
+        >
+          <span class="joke-panel__tooltip">Copy joke to share</span>
+          <svg
+            aria-hidden="true"
+            focusable="false"
+            class="joke-panel__icon"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M8 2a2 2 0 0 0-2 2v10h2V4h9V2H8Zm3 4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-9Zm0 2h9v12h-9V8Z"
+            />
+          </svg>
+        </div>
+        <p class="joke-panel__prompt joke-panel__text">
+          Press the button to get your first joke.
+        </p>
+        <p
+          class="joke-panel__setup joke-panel__text is-hidden"
+          aria-hidden="true"
+        ></p>
+        <p
+          class="joke-panel__punchline joke-panel__text is-hidden"
+          aria-hidden="true"
+        ></p>
+      </article>
+      <div class="joke-controls">
+        <button class="generateAJokeButton" type="button">
+          Get another joke
+        </button>
+        <div
+          class="category-pills"
+          role="group"
+          aria-label="Pick a joke category (optional)"
+        >
+          <button
+            class="category-pill is-active"
+            type="button"
+            data-category="random"
+          >
+            Random
+          </button>
+          <button class="category-pill" type="button" data-category="general">
+            General
+          </button>
+          <button
+            class="category-pill"
+            type="button"
+            data-category="programming"
+          >
+            Programming
+          </button>
+          <button
+            class="category-pill"
+            type="button"
+            data-category="knock-knock"
+          >
+            Knock Knock
+          </button>
+        </div>
+      </div>
+    </main>
+    <!-- All of the code below tells the page how to grab a new joke -->
+    <script>
+      // Grab the parts of the page we want to change when a joke loads
+      const jokeButton = document.querySelector('.generateAJokeButton');
+      const promptEl = document.querySelector('.joke-panel__prompt');
+      const setupEl = document.querySelector('.joke-panel__setup');
+      const punchlineEl = document.querySelector('.joke-panel__punchline');
+      const copyButton = document.querySelector('.joke-panel__copy');
+      const tooltipEl = document.querySelector('.joke-panel__tooltip');
+      const categoryButtons = Array.from(
+        document.querySelectorAll('.category-pill')
+      );
+      const API_ROOT = 'https://official-joke-api.appspot.com/jokes';
+      let activeCategory = 'random';
 
-</body>
+      // Light up the category button that is currently selected
+      function setActiveCategory(category) {
+        activeCategory = category;
+        categoryButtons.forEach((button) => {
+          const isActive = button.dataset.category === category;
+          button.classList.toggle('is-active', isActive);
+        });
+      }
+
+      // Decide which web address to call based on the chosen category
+      function buildJokeUrl() {
+        if (!activeCategory || activeCategory === 'random') {
+          return `${API_ROOT}/random`;
+        }
+        return `${API_ROOT}/${activeCategory}/random`;
+      }
+
+      // Show or hide a line of text by toggling a helper class
+      function setVisibility(element, shouldShow) {
+        if (shouldShow) {
+          element.classList.remove('is-hidden');
+          element.removeAttribute('aria-hidden');
+        } else {
+          element.classList.add('is-hidden');
+          element.setAttribute('aria-hidden', 'true');
+        }
+      }
+
+      // Show or hide the copy button so it only appears when we have a full joke
+      function setCopyVisibility(shouldShow) {
+        if (shouldShow) {
+          copyButton.classList.remove('is-hidden');
+          copyButton.setAttribute('tabindex', '0');
+          copyButton.setAttribute('aria-hidden', 'false');
+        } else {
+          copyButton.classList.add('is-hidden');
+          copyButton.setAttribute('tabindex', '-1');
+          copyButton.setAttribute('aria-hidden', 'true');
+          tooltipEl.textContent = 'Copy joke to share';
+        }
+      }
+
+      // Ask the API for a new joke and update the page with the answer
+      async function fetchJoke() {
+        jokeButton.disabled = true;
+        jokeButton.textContent = 'Loading...';
+        categoryButtons.forEach((button) => {
+          button.disabled = true;
+        });
+        setCopyVisibility(false);
+        setVisibility(promptEl, true);
+        promptEl.textContent = 'Fetching something funny…';
+        setVisibility(setupEl, false);
+        setVisibility(punchlineEl, false);
+        try {
+          const response = await fetch(buildJokeUrl());
+          if (!response.ok) {
+            throw new Error(`Request failed with ${response.status}`);
+          }
+          const payload = await response.json();
+          const joke = Array.isArray(payload) ? payload[0] : payload;
+          if (!joke?.setup || !joke?.punchline) {
+            throw new Error('No joke returned');
+          }
+          const { setup, punchline } = joke;
+          setVisibility(promptEl, false);
+          setVisibility(setupEl, true);
+          setVisibility(punchlineEl, true);
+          setupEl.textContent = setup;
+          punchlineEl.textContent = punchline;
+          setCopyVisibility(true);
+        } catch (error) {
+          setVisibility(promptEl, true);
+          promptEl.textContent =
+            'Hmm, the punchline got lost. Try again in a moment.';
+          setCopyVisibility(false);
+        } finally {
+          jokeButton.disabled = false;
+          jokeButton.textContent = 'Get another joke';
+          categoryButtons.forEach((button) => {
+            button.disabled = false;
+          });
+        }
+      }
+
+      // Try to copy text the modern way, and fall back to an older trick if needed
+      function writeToClipboard(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          return navigator.clipboard.writeText(text);
+        }
+        return new Promise((resolve, reject) => {
+          const helper = document.createElement('textarea');
+          helper.value = text;
+          helper.setAttribute('readonly', '');
+          helper.style.position = 'absolute';
+          helper.style.left = '-9999px';
+          document.body.appendChild(helper);
+          const selection = document.getSelection();
+          const originalRange =
+            selection && selection.rangeCount > 0
+              ? selection.getRangeAt(0)
+              : null;
+          helper.select();
+          const successful = document.execCommand('copy');
+          document.body.removeChild(helper);
+          if (originalRange && selection) {
+            selection.removeAllRanges();
+            selection.addRange(originalRange);
+          }
+          if (successful) {
+            resolve();
+          } else {
+            reject(new Error('Copy command unavailable'));
+          }
+        });
+      }
+
+      // Copy both the setup and the punchline so the whole joke can be shared
+      function copyActiveJoke() {
+        if (copyButton.classList.contains('is-hidden')) {
+          return;
+        }
+        const setup = setupEl.textContent.trim();
+        const punchline = punchlineEl.textContent.trim();
+        if (!setup || !punchline) {
+          return;
+        }
+        const jokeText = `${setup}\n${punchline}`;
+        writeToClipboard(jokeText)
+          .then(() => {
+            tooltipEl.textContent = 'Copied!';
+            setTimeout(() => {
+              tooltipEl.textContent = 'Copy joke to share';
+            }, 1200);
+          })
+          .catch(() => {
+            tooltipEl.textContent = 'Copy failed';
+            setTimeout(() => {
+              tooltipEl.textContent = 'Copy joke to share';
+            }, 1200);
+          });
+      }
+
+      // When someone taps a category pill, remember it and fetch a fresh joke
+      function handleCategoryClick(event) {
+        const { category } = event.currentTarget.dataset;
+        if (!category) {
+          return;
+        }
+        if (category !== activeCategory) {
+          setActiveCategory(category);
+        }
+        fetchJoke();
+      }
+
+      // Set up the page so the "Random" option looks selected from the start
+      setActiveCategory(activeCategory);
+      // Clicking the big button always grabs another joke
+      jokeButton.addEventListener('click', fetchJoke);
+      // Give every category pill the ability to load its own jokes
+      categoryButtons.forEach((button) => {
+        button.addEventListener('click', handleCategoryClick);
+      });
+      // Let the copy button work with both mouse clicks and keyboard presses
+      copyButton.addEventListener('click', copyActiveJoke);
+      copyButton.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          copyActiveJoke();
+        }
+      });
+      // Start with the copy button hidden until the first joke pops in
+      setCopyVisibility(false);
+    </script>
+  </body>
 </html>
